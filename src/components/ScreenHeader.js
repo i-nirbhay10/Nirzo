@@ -6,25 +6,27 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const ScreenHeader = ({ title, onBackPress, rightElement, showShadow = false }) => {
+const ScreenHeader = ({ title, onBackPress, rightElement, showShadow = false, style, titleStyle }) => {
   const insets = useSafeAreaInsets();
 
   return (
     <View style={[
       styles.header, 
       { paddingTop: insets.top + 10 },
-      showShadow && styles.shadow
+      showShadow && styles.shadow,
+      style
     ]}>
       {onBackPress ? (
         <TouchableOpacity onPress={onBackPress} style={styles.backButton} activeOpacity={0.7}>
-          <Text style={styles.arrowIcon}>←</Text>
+          <Ionicons name="chevron-back" size={22} color="#1A1C20" style={{ marginRight: 2 }} />
         </TouchableOpacity>
       ) : (
         <View style={styles.emptyPlaceholder} />
       )}
       
-      <Text style={styles.headerTitle} numberOfLines={1}>
+      <Text style={[styles.headerTitle, titleStyle]} numberOfLines={1}>
         {title || ''}
       </Text>
       
@@ -44,7 +46,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingBottom: 12,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
   },
   shadow: {
     shadowColor: '#000',
@@ -68,11 +72,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
+    shadowOpacity: 0.08,
     shadowRadius: 6,
-    elevation: 2,
+    elevation: 3,
   },
   arrowIcon: {
     fontSize: 18,

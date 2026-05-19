@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Colors } from '../theme';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const CartItemRow = ({ item, onRemove, onQtyDecrease, onQtyIncrease, showBorder = true }) => {
   const finalItemPrice = item.price * (1 - (item.discountPercentage || 0) / 100);
@@ -32,7 +33,7 @@ const CartItemRow = ({ item, onRemove, onQtyDecrease, onQtyIncrease, showBorder 
 
       <View style={styles.actionColumn}>
         <TouchableOpacity style={styles.deleteBtn} onPress={onRemove} activeOpacity={0.7}>
-          <Text style={{ color: '#EF4444', fontSize: 13, fontWeight: '700' }}>✕</Text>
+          <Ionicons name="trash-outline" size={16} color="#EF4444" />
         </TouchableOpacity>
         
         <View style={styles.quantityContainer}>

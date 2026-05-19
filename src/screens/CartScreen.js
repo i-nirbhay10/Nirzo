@@ -23,6 +23,7 @@ const CartScreen = ({ navigation }) => {
     removeFromCart,
     clearCart,
     cartTotal,
+    showAlert,
   } = useContext(AppContext);
 
   const [couponCode, setCouponCode] = useState('');
@@ -67,10 +68,11 @@ const CartScreen = ({ navigation }) => {
     setCouponCode('');
     setDiscountPercent(0);
     setCouponSuccess('');
-    Alert.alert(
-      'Order Confirmed! 🎉',
+    showAlert(
+      'Order Confirmed!',
       'Thank you for shopping with Nirzo. Your order has been placed successfully and is being processed.',
-      [{ text: 'Great', onPress: () => navigation.navigate('HomeTab') }]
+      [{ text: 'Great', onPress: () => navigation.navigate('HomeTab') }],
+      'success'
     );
   };
 

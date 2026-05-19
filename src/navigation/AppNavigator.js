@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, View, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { AppProvider, AppContext } from '../context/AppContext';
 import HomeScreen from '../screens/HomeScreen';
@@ -12,6 +13,8 @@ import SearchScreen from '../screens/SearchScreen';
 import CartScreen from '../screens/CartScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import AuthScreen from '../screens/AuthScreen';
+import SplashScreen from '../screens/SplashScreen';
+import CustomAlert from '../components/CustomAlert';
 import { Colors } from '../theme';
 
 const Stack = createStackNavigator();
@@ -41,7 +44,7 @@ const TabNavigator = () => {
         component={HomeScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>🏠</Text>,
+          tabBarIcon: ({ color }) => <Ionicons name="home-outline" size={20} color={color} />,
         }}
       />
       <Tab.Screen
@@ -49,7 +52,7 @@ const TabNavigator = () => {
         component={SearchScreen}
         options={{
           tabBarLabel: 'Search',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>🔍</Text>,
+          tabBarIcon: ({ color }) => <Ionicons name="search-outline" size={20} color={color} />,
         }}
       />
       <Tab.Screen
@@ -59,7 +62,7 @@ const TabNavigator = () => {
           tabBarLabel: 'Cart',
           tabBarIcon: ({ color }) => (
             <View style={{ position: 'relative', width: 24, height: 24, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ color, fontSize: 20 }}>🛒</Text>
+              <Ionicons name="cart-outline" size={20} color={color} />
               {totalCartItems > 0 && (
                 <View style={styles.badgeContainer}>
                   <Text style={styles.badgeText}>{totalCartItems}</Text>
@@ -74,7 +77,7 @@ const TabNavigator = () => {
         component={ProfileScreen}
         options={{
           tabBarLabel: 'Profile',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 20 }}>👤</Text>,
+          tabBarIcon: ({ color }) => <Ionicons name="person-outline" size={20} color={color} />,
         }}
       />
     </Tab.Navigator>
@@ -83,6 +86,11 @@ const TabNavigator = () => {
 
 const NavigationWrapper = () => {
   const { user } = useContext(AppContext);
+  const [showSplash, setShowSplash] = useState(true);
+
+  if (showSplash) {
+    return <SplashScreen onFinish={() => setShowSplash(false)} />;
+  }
 
   return (
     <NavigationContainer>
@@ -96,6 +104,7 @@ const NavigationWrapper = () => {
           <Stack.Screen name="Auth" component={AuthScreen} />
         )}
       </Stack.Navigator>
+      <CustomAlert />
     </NavigationContainer>
   );
 };

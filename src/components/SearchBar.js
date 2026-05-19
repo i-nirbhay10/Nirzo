@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const SearchBar = ({
   placeholder,
@@ -28,13 +29,13 @@ const SearchBar = ({
           activeOpacity={0.9}
           onPress={onFocus}
         >
-          <Text style={styles.searchIcon}>🔍</Text>
+          <Ionicons name="search" size={18} color="#9CA3AF" style={styles.searchIcon} />
           <Text style={styles.searchPlaceholder}>{placeholder || 'Search products...'}</Text>
         </TouchableOpacity>
         
         {onFilterPress && (
           <TouchableOpacity style={styles.filterBtn} onPress={onFilterPress}>
-            <Text style={{ fontSize: 18 }}>⚙️</Text>
+            <Ionicons name="options-outline" size={20} color="#1A1C20" />
           </TouchableOpacity>
         )}
       </View>
@@ -45,7 +46,7 @@ const SearchBar = ({
   return (
     <View style={styles.searchHeader}>
       <View style={styles.searchBar}>
-        <Text style={styles.searchIcon}>🔍</Text>
+        <Ionicons name="search" size={18} color="#9CA3AF" style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
           placeholder={placeholder || 'Search products...'}
@@ -60,14 +61,14 @@ const SearchBar = ({
         
         {showClear && value && value.length > 0 && onClear && (
           <TouchableOpacity onPress={onClear} style={styles.clearBtn} activeOpacity={0.7}>
-            <Text style={styles.clearBtnText}>✕</Text>
+            <Ionicons name="close-circle" size={16} color="#9CA3AF" />
           </TouchableOpacity>
         )}
       </View>
 
       {onFilterPress && (
         <TouchableOpacity style={styles.filterBtn} onPress={onFilterPress} activeOpacity={0.8}>
-          <Text style={{ fontSize: 18 }}>⚙️</Text>
+          <Ionicons name="options-outline" size={20} color="#1A1C20" />
         </TouchableOpacity>
       )}
     </View>
@@ -97,8 +98,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   searchIcon: {
-    fontSize: 16,
-    marginRight: 10,
+    marginRight: 8,
   },
   searchPlaceholder: {
     flex: 1,
@@ -112,17 +112,9 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   clearBtn: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#E5E7EB',
+    padding: 4,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  clearBtnText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#6B7280',
   },
   filterBtn: {
     width: 50,

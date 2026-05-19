@@ -9,6 +9,8 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Colors } from '../theme';
 import { AppContext } from '../context/AppContext';
 
@@ -19,7 +21,8 @@ const { width } = Dimensions.get('window');
 
 const ProductDetailScreen = ({ route, navigation }) => {
   const { product } = route.params || {};
-  const { addToCart, toggleWishlist, isInWishlist } = useContext(AppContext);
+  const { addToCart, toggleWishlist, isInWishlist, showAlert } = useContext(AppContext);
+  const insets = useSafeAreaInsets();
 
   // States
   const [selectedSize, setSelectedSize] = useState('M');
@@ -44,8 +47,8 @@ const ProductDetailScreen = ({ route, navigation }) => {
   // Handle Add to Cart action
   const handleAddToCart = () => {
     addToCart(product, quantity, selectedSize, selectedColor);
-    Alert.alert(
-      'Added to Cart! 🛒',
+    showAlert(
+      'Added to Cart!',
       `${quantity}x ${product.title} (${selectedSize} / ${selectedColor}) has been added to your shopping cart successfully.`,
       [
         {
@@ -54,9 +57,10 @@ const ProductDetailScreen = ({ route, navigation }) => {
         },
         {
           text: 'Go to Cart',
-          onPress: () => navigation.navigate('Cart'),
+          onPress: () => navigation.navigate('Main', { screen: 'Cart' }),
         },
-      ]
+      ],
+      'success'
     );
   };
 
@@ -69,15 +73,24 @@ const ProductDetailScreen = ({ route, navigation }) => {
       <ScreenHeader
         title={product.brand || 'Product Details'}
         onBackPress={() => navigation.goBack()}
+        style={{ backgroundColor: '#fff', borderBottomWidth: 0 }}
         rightElement={
           <TouchableOpacity onPress={() => toggleWishlist(product)} style={styles.favButton} activeOpacity={0.8}>
-            <Text style={{ fontSize: 18 }}>{isWishlisted ? '❤️' : '🤍'}</Text>
+            <Ionicons
+              name={isWishlisted ? 'heart' : 'heart-outline'}
+              size={20}
+              color={isWishlisted ? '#EF4444' : '#1A1C20'}
+            />
           </TouchableOpacity>
         }
       />
 
       {/* Dynamic Scroll View */}
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.scrollView}
+        contentContainerStyle={{ paddingBottom: Math.max(80, insets.bottom) }}
+      >
         {/* Dynamic Image Carousel Slider */}
         <View style={styles.carouselContainer}>
           <ScrollView
@@ -127,12 +140,13 @@ const ProductDetailScreen = ({ route, navigation }) => {
           <View style={styles.categoryRow}>
             <Text style={styles.categoryText}>{product.category.toUpperCase()}</Text>
             <View style={styles.ratingBadge}>
-              <Text style={styles.ratingText}>⭐ {product.rating.toFixed(1)}</Text>
+              <Ionicons name="star" size={13} color="#D97706" style={{ marginRight: 4 }} />
+              <Text style={styles.ratingText}>{product.rating.toFixed(1)}</Text>
             </View>
           </View>
 
           <Text style={styles.productTitle}>{product.title}</Text>
-          
+
           {/* Price Container */}
           <View style={styles.priceContainer}>
             <Text style={styles.discountedPrice}>${finalPrice.toFixed(2)}</Text>
@@ -147,9 +161,13 @@ const ProductDetailScreen = ({ route, navigation }) => {
             </Text>
           </Text>
 
+          <View style={styles.divider} />
+
           {/* Description Section */}
           <Text style={styles.sectionTitle}>Product Description</Text>
           <Text style={styles.descriptionText}>{product.description}</Text>
+
+          <View style={styles.divider} />
 
           {/* Specifications Grid */}
           <Text style={styles.sectionTitle}>Specifications</Text>
@@ -172,6 +190,8 @@ const ProductDetailScreen = ({ route, navigation }) => {
             </View>
           </View>
 
+          <View style={styles.divider} />
+
           {/* Color Selection */}
           <Text style={styles.sectionTitle}>Select Color</Text>
           <View style={styles.optionsRow}>
@@ -193,6 +213,8 @@ const ProductDetailScreen = ({ route, navigation }) => {
               );
             })}
           </View>
+
+          <View style={styles.divider} />
 
           {/* Size Selection */}
           <Text style={styles.sectionTitle}>Select Size</Text>
@@ -219,12 +241,16 @@ const ProductDetailScreen = ({ route, navigation }) => {
           {/* Reviews List */}
           {product.reviews && product.reviews.length > 0 && (
             <View>
+              <View style={styles.divider} />
               <Text style={styles.sectionTitle}>Customer Reviews ({product.reviews.length})</Text>
               {product.reviews.map((rev, idx) => (
                 <View key={idx} style={styles.reviewItem}>
                   <View style={styles.reviewHeader}>
                     <Text style={styles.reviewerName}>{rev.reviewerName}</Text>
-                    <Text style={styles.reviewRating}>⭐ {rev.rating}★</Text>
+                    <View style={styles.reviewRatingRow}>
+                      <Ionicons name="star" size={11} color="#F59E0B" style={{ marginRight: 2 }} />
+                      <Text style={styles.reviewRatingText}>{rev.rating}</Text>
+                    </View>
                   </View>
                   <Text style={styles.reviewComment}>"{rev.comment}"</Text>
                   <Text style={styles.reviewDate}>{new Date(rev.date).toLocaleDateString()}</Text>
@@ -236,7 +262,7 @@ const ProductDetailScreen = ({ route, navigation }) => {
       </ScrollView>
 
       {/* Sticky Bottom Purchase Bar */}
-      <View style={styles.bottomPurchaseBar}>
+      <View style={[styles.bottomPurchaseBar, { paddingBottom: Math.max(15, insets.bottom + 8) }]}>
         {/* Quantity control */}
         <View style={styles.qtyContainer}>
           <TouchableOpacity
@@ -268,6 +294,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8F9FA',
   },
+  scrollView: {
+    backgroundColor: '#fff',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#F3F4F6',
+    marginVertical: 20,
+  },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -297,11 +331,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
+    shadowOpacity: 0.08,
     shadowRadius: 6,
-    elevation: 2,
+    elevation: 3,
   },
   carouselContainer: {
     width: width,
@@ -324,7 +360,7 @@ const styles = StyleSheet.create({
   },
   dotsRow: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 10,
     flexDirection: 'row',
     alignSelf: 'center',
   },
@@ -358,7 +394,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
     padding: 24,
-    marginTop: -20,
+    marginTop: 0,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -10 },
     shadowOpacity: 0.02,
@@ -381,11 +417,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   ratingText: {
     fontSize: 12,
     fontWeight: '700',
     color: '#D97706',
+    lineHeight: 16,
   },
   productTitle: {
     fontSize: 22,
@@ -417,10 +456,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   sectionTitle: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '700',
     color: '#1A1C20',
-    marginTop: 25,
     marginBottom: 12,
   },
   descriptionText: {
@@ -505,8 +543,16 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1A1C20',
   },
-  reviewRating: {
-    fontSize: 12,
+  reviewRatingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFBEB',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  reviewRatingText: {
+    fontSize: 11,
     fontWeight: '700',
     color: '#F59E0B',
   },

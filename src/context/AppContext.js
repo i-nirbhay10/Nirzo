@@ -5,8 +5,8 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   // Authentication State
   const [user, setUser] = useState({
-    name: 'Emily Watson',
-    email: 'emily.watson@nirzo.com',
+    name: 'Nirbhay Verma',
+    email: 'nirbhay.verma@nirzo.com',
     avatar: '💠',
     isLoggedIn: true,
   });
@@ -22,6 +22,29 @@ export const AppProvider = ({ children }) => {
   ]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Custom Alert State
+  const [alertConfig, setAlertConfig] = useState({
+    visible: false,
+    title: '',
+    message: '',
+    type: 'success',
+    buttons: [],
+  });
+
+  const showAlert = (title, message, buttons = [], type = 'success') => {
+    setAlertConfig({
+      visible: true,
+      title,
+      message,
+      type,
+      buttons,
+    });
+  };
+
+  const hideAlert = () => {
+    setAlertConfig((prev) => ({ ...prev, visible: false }));
+  };
 
   // Cart and Wishlist State
   const [cart, setCart] = useState([]);
@@ -49,10 +72,10 @@ export const AppProvider = ({ children }) => {
       // Fetch products
       const response = await fetch('https://dummyjson.com/products?limit=50');
       if (!response.ok) throw new Error('Failed to fetch products');
-      
+
       const data = await response.json();
       setProducts(data.products);
-      
+
       // Fetch dynamic categories to enrich our category selection
       const catResponse = await fetch('https://dummyjson.com/products/categories');
       if (catResponse.ok) {
@@ -67,7 +90,7 @@ export const AppProvider = ({ children }) => {
           'laptops': '💻',
           'smartphones': '📱',
         };
-        
+
         const enrichedCategories = [
           { id: 'all', name: 'All', icon: '✨' },
           ...catData.slice(0, 8).map(c => {
@@ -80,7 +103,7 @@ export const AppProvider = ({ children }) => {
             };
           })
         ];
-        
+
         // Remove duplicates and set
         const uniqueCategories = enrichedCategories.reduce((acc, current) => {
           const x = acc.find(item => item.id === current.id);
@@ -90,7 +113,7 @@ export const AppProvider = ({ children }) => {
             return acc;
           }
         }, []);
-        
+
         setCategories(uniqueCategories);
       }
     } catch (err) {
@@ -226,6 +249,9 @@ export const AppProvider = ({ children }) => {
         addRecentSearch,
         filters,
         setFilters,
+        alertConfig,
+        showAlert,
+        hideAlert,
       }}
     >
       {children}

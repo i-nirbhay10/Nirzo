@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Colors } from '../theme';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -34,7 +35,11 @@ const ProductCard = ({ product, onPress, onFavoritePress, isFavorite, cardWidth 
             onPress={onFavoritePress}
             activeOpacity={0.8}
           >
-            <Text style={{ fontSize: 13 }}>{isFavorite ? '❤️' : '🤍'}</Text>
+            <Ionicons 
+              name={isFavorite ? 'heart' : 'heart-outline'} 
+              size={14} 
+              color={isFavorite ? '#EF4444' : '#1A1C20'} 
+            />
           </TouchableOpacity>
         )}
 
@@ -45,7 +50,8 @@ const ProductCard = ({ product, onPress, onFavoritePress, isFavorite, cardWidth 
         )}
         
         <View style={styles.ratingBadge}>
-          <Text style={styles.ratingText}>⭐ {product.rating.toFixed(1)}</Text>
+          <Ionicons name="star" size={10} color="#D97706" style={{ marginRight: 2 }} />
+          <Text style={styles.ratingText}>{product.rating.toFixed(1)}</Text>
         </View>
       </View>
       
@@ -131,11 +137,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   ratingText: {
     fontSize: 9,
     fontWeight: '700',
     color: '#333',
+    lineHeight: 12,
   },
   productInfo: {
     marginTop: 10,

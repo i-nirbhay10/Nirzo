@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Colors } from '../theme';
 import { AppContext } from '../context/AppContext';
 
@@ -62,7 +63,7 @@ const HomeScreen = ({ navigation }) => {
           </View>
           <View style={styles.headerRight}>
             <TouchableOpacity style={styles.notificationBtn} onPress={() => navigation.navigate('Cart')}>
-              <Text style={{ fontSize: 18 }}>🔔</Text>
+              <Ionicons name="notifications-outline" size={22} color="#1A1C20" />
               <View style={styles.notificationBadge} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.profilePic} onPress={() => navigation.navigate('Profile')}>

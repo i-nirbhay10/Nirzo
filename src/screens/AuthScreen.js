@@ -15,7 +15,7 @@ import { Colors } from '../theme';
 import { AppContext } from '../context/AppContext';
 
 const AuthScreen = ({ navigation }) => {
-  const { login } = useContext(AppContext);
+  const { login, showAlert } = useContext(AppContext);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,17 +23,17 @@ const AuthScreen = ({ navigation }) => {
 
   const handleSubmit = () => {
     if (!email || !password || (!isLogin && !name)) {
-      Alert.alert('Error', 'Please fill in all fields.');
+      showAlert('Error', 'Please fill in all fields.', [], 'error');
       return;
     }
 
     if (!email.includes('@')) {
-      Alert.alert('Error', 'Please enter a valid email address.');
+      showAlert('Error', 'Please enter a valid email address.', [], 'error');
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters.');
+      showAlert('Error', 'Password must be at least 6 characters.', [], 'error');
       return;
     }
 
@@ -41,18 +41,23 @@ const AuthScreen = ({ navigation }) => {
       const success = login(email, password);
       if (success) {
         // AppNavigator will automatically update since user state is set in context
-        Alert.alert('Success', 'Welcome back to Nirzo!');
+        showAlert('Success', 'Welcome back to Nirzo!', [], 'success');
       } else {
-        Alert.alert('Error', 'Invalid login credentials.');
+        showAlert('Error', 'Invalid login credentials.', [], 'error');
       }
     } else {
       // Sign Up Flow - simulate success and login
-      Alert.alert('Success', 'Account created! Welcome to Nirzo.', [
-        {
-          text: 'OK',
-          onPress: () => login(email, password),
-        },
-      ]);
+      showAlert(
+        'Success',
+        'Account created! Welcome to Nirzo.',
+        [
+          {
+            text: 'OK',
+            onPress: () => login(email, password),
+          },
+        ],
+        'success'
+      );
     }
   };
 
