@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, View, StyleSheet } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { AppProvider, AppContext } from '../context/AppContext';
@@ -23,6 +23,7 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
   const { cart } = useContext(AppContext);
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const insets = useSafeAreaInsets();
 
   return (
     <Tab.Navigator
@@ -33,8 +34,8 @@ const TabNavigator = () => {
           backgroundColor: Colors.white,
           borderTopWidth: 1,
           borderTopColor: Colors.border,
-          paddingBottom: 5,
-          height: 60,
+          paddingBottom: Math.max(insets.bottom, 5),
+          height: 55 + Math.max(insets.bottom, 5),
         },
         headerShown: false,
       }}
