@@ -4,6 +4,7 @@ Nirzo is a full-featured e-commerce application built with React Native. It prov
 
 ### App Demo
 
+Uploading Nirzo (1).mp4…
 
 ## Features
 
